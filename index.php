@@ -12,6 +12,7 @@ if (!defined('ABSPATH')) { exit; }
 
 require_once dirname(__FILE__) . '/helpers/enqueue_scripts.php';
 require_once dirname(__FILE__) . '/helpers/custom-post-types.php';
+require_once dirname(__FILE__) . '/helpers/custom-fields.php';
 
 // Agregar el menú al wp-admin
 function add_menu_item() {
