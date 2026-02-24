@@ -64,13 +64,13 @@ function register_sites_post_type()
 }
 add_action('init', 'register_sites_post_type', 0);
 
-function register_shifts_post_type()
+function register_journals_post_type()
 {
   $labels = array(
     'name' => _x('Jornadas', 'Post Type General Name', 'kudi-shift'),
     'singular_name' => _x('Jornada', 'Post Type Singular Name', 'kudi-shift'),
-    'menu_name' => __('Jornadas', 'kudi-shift'),
-    'name_admin_bar' => __('Jornadas', 'kudi-shift'),
+    'menu_name' => __('Jornada', 'kudi-shift'),
+    'name_admin_bar' => __('Jornada', 'kudi-shift'),
     'archives' => __('Archivo de jornadas', 'kudi-shift'),
     'attributes' => __('Atributos de la jornada', 'kudi-shift'),
     'parent_item_colon' => __('Jornada padre:', 'kudi-shift'),
@@ -104,7 +104,7 @@ function register_shifts_post_type()
   );
 
   $args = array(
-    'label' => __('Jornadas', 'kudi-shift'),
+    'label' => __('Jornada', 'kudi-shift'),
     'description' => __('Jornadas', 'kudi-shift'),
     'labels' => $labels,
     'supports' => array('title'),
@@ -114,6 +114,71 @@ function register_shifts_post_type()
     'show_in_menu' => true,
     'menu_position' => 32,
     'menu_icon' => 'dashicons-clock',
+    'show_in_admin_bar' => true,
+    'show_in_nav_menus' => true,
+    'can_export' => true,
+    'has_archive' => true,
+    'exclude_from_search' => false,
+    'publicly_queryable' => true,
+    'rewrite' => $rewrite,
+    'capability_type' => 'post',
+    'show_in_rest' => true
+  );
+
+  register_post_type('journals', $args);
+}
+add_action('init', 'register_journals_post_type', 0);
+
+function register_shifts_post_type()
+{
+  $labels = array(
+    'name' => _x('Turnos', 'Post Type General Name', 'kudi-shift'),
+    'singular_name' => _x('Turno', 'Post Type Singular Name', 'kudi-shift'),
+    'menu_name' => __('Turno', 'kudi-shift'),
+    'name_admin_bar' => __('Turno', 'kudi-shift'),
+    'archives' => __('Archivo de turnos', 'kudi-shift'),
+    'attributes' => __('Atributos del turno', 'kudi-shift'),
+    'parent_item_colon' => __('Turno padre:', 'kudi-shift'),
+    'all_items' => __('Todos los turnos', 'kudi-shift'),
+    'add_new_item' => __('Añadir nuevo turno', 'kudi-shift'),
+    'add_new' => __('Añadir turno', 'kudi-shift'),
+    'new_item' => __('Nuevo turno', 'kudi-shift'),
+    'edit_item' => __('Editar turno', 'kudi-shift'),
+    'update_item' => __('Actualizar turno', 'kudi-shift'),
+    'view_item' => __('Ver turno', 'kudi-shift'),
+    'view_items' => __('Ver turnos', 'kudi-shift'),
+    'search_items' => __('Buscar turno', 'kudi-shift'),
+    'not_found' => __('No se encontró', 'kudi-shift'),
+    'not_found_in_trash' => __('No se encontró en la papelera', 'kudi-shift'),
+    'featured_image' => __('Imagen destacada', 'kudi-shift'),
+    'set_featured_image' => __('Elegir imagen destacada', 'kudi-shift'),
+    'remove_featured_image' => __('Remover imagen destacada', 'kudi-shift'),
+    'use_featured_image' => __('Usar como imagen destacada', 'kudi-shift'),
+    'insert_into_item' => __('Agregar al turno', 'kudi-shift'),
+    'uploaded_to_this_item' => __('Subido a este turno', 'kudi-shift'),
+    'items_list' => __('Lista de turnos', 'kudi-shift'),
+    'items_list_navigation' => __('Navegación de lista de turnos', 'kudi-shift'),
+    'filter_items_list' => __('Filtrar lista de turnos', 'kudi-shift'),
+  );
+
+  $rewrite = array(
+    'slug' => 'turno',
+    'with_front' => true,
+    'pages' => true,
+    'feeds' => true,
+  );
+
+  $args = array(
+    'label' => __('turno', 'kudi-shift'),
+    'description' => __('turnos', 'kudi-shift'),
+    'labels' => $labels,
+    'supports' => array('title'),
+    'hierarchical' => false,
+    'public' => true,
+    'show_ui' => true,
+    'show_in_menu' => true,
+    'menu_position' => 32,
+    'menu_icon' => 'dashicons-money-alt',
     'show_in_admin_bar' => true,
     'show_in_nav_menus' => true,
     'can_export' => true,
