@@ -17,11 +17,11 @@ require_once dirname(__FILE__) . '/helpers/custom-post-types.php';
 function add_menu_item() {
   add_menu_page(
     'Reporte de Tokens',           // Título de la página (tag <title>)
-    'Turno',           // Texto del menú lateral
+    'Turnos',           // Texto del menú lateral
     'manage_options',      // Capacidad requerida
     'kudi-shift',           // Slug único de la página
     'kudi_shift_render',    // Función que renderiza el contenido
-    'dashicons-clock', // Ícono (dashicon o URL)
+    'dashicons-money-alt', // Ícono (dashicon o URL)
     30                     // Posición en el menú
   );
 }
