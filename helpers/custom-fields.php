@@ -123,7 +123,7 @@ add_action( 'acf/include_fields', function() {
 			),
 			'layout' => 'table',
 			'pagination' => 0,
-			'min' => 0,
+			'min' => 1,
 			'max' => 0,
 			'collapsed' => '',
 			'button_label' => 'Add Row',
