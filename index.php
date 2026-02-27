@@ -38,3 +38,34 @@ add_action('save_post_shift', function($post_id) {
     'post_name'  => sanitize_title($new_title),
   ]);
 });
+
+// Capabilities personalizadas para el CPT "sites"
+
+function add_theme_caps() {
+  $admin_role = get_role('contributor');
+
+  $admin_role->add_cap('edit_site');
+  $admin_role->add_cap('read_site');
+  $admin_role->add_cap('delete_site');
+  $admin_role->add_cap('edit_sites');
+  $admin_role->add_cap('edit_others_sites');
+  $admin_role->add_cap('publish_sites');
+  $admin_role->add_cap('read_private_sites');
+
+  $admin_role->add_cap('edit_journal');
+  $admin_role->add_cap('read_journal');
+  $admin_role->add_cap('delete_journal');
+  $admin_role->add_cap('edit_journals');
+  $admin_role->add_cap('edit_others_journals');
+  $admin_role->add_cap('publish_journals');
+  $admin_role->add_cap('read_private_journals');
+
+  $admin_role->add_cap('edit_shift');
+  $admin_role->add_cap('read_shift');
+  $admin_role->add_cap('delete_shift');
+  $admin_role->add_cap('edit_shifts');
+  $admin_role->add_cap('edit_others_shifts');
+  $admin_role->add_cap('publish_shifts');
+  $admin_role->add_cap('read_private_shifts');
+}
+add_action('admin_init', 'add_theme_caps');

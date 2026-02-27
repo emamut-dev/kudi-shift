@@ -56,7 +56,15 @@ function register_sites_post_type()
     'exclude_from_search' => false,
     'publicly_queryable' => true,
     'rewrite' => $rewrite,
-    'capability_type' => 'post',
+    'capabilities' => array(
+      'edit_post' => 'edit_site',
+      'read_post' => 'read_site',
+      'delete_post' => 'delete_site',
+      'edit_posts' => 'edit_sites',
+      'edit_others_posts' => 'edit_others_sites',
+      'publish_posts' => 'publish_sites',
+      'read_private_posts' => 'read_private_sites',
+    ),
     'show_in_rest' => true
   );
 
@@ -121,7 +129,15 @@ function register_journals_post_type()
     'exclude_from_search' => false,
     'publicly_queryable' => true,
     'rewrite' => $rewrite,
-    'capability_type' => 'post',
+    'capabilities' => array(
+      'edit_post' => 'edit_journal',
+      'read_post' => 'read_journal',
+      'delete_post' => 'delete_journal',
+      'edit_posts' => 'edit_journals',
+      'edit_others_posts' => 'edit_others_journals',
+      'publish_posts' => 'publish_journals',
+      'read_private_posts' => 'read_private_journals',
+    ),
     'show_in_rest' => true
   );
 
@@ -186,7 +202,15 @@ function register_shifts_post_type()
     'exclude_from_search' => false,
     'publicly_queryable' => true,
     'rewrite' => $rewrite,
-    'capability_type' => 'post',
+    'capabilities' => array(
+      'edit_post' => 'edit_shift',
+      'read_post' => 'read_shift',
+      'delete_post' => 'delete_shift',
+      'edit_posts' => 'edit_shifts',
+      'edit_others_posts' => 'edit_others_shifts',
+      'publish_posts' => 'publish_shifts',
+      'read_private_posts' => 'read_private_shifts',
+    ),
     'show_in_rest' => true
   );
 
