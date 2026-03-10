@@ -3,7 +3,7 @@ function register_sites_post_type()
 {
   $labels = array(
     'name' => _x('Sitios', 'Post Type General Name', 'kudi-shift'),
-    'singular_name' => _x('Sitios', 'Post Type Singular Name', 'kudi-shift'),
+    'singular_name' => _x('Sitio', 'Post Type Singular Name', 'kudi-shift'),
     'menu_name' => __('Sitios', 'kudi-shift'),
     'name_admin_bar' => __('Sitio', 'kudi-shift'),
     'archives' => __('Archivo de sitios', 'kudi-shift'),
@@ -39,7 +39,7 @@ function register_sites_post_type()
   );
 
   $args = array(
-    'label' => __('Sitio', 'kudi-shift'),
+    'label' => __('Sitios', 'kudi-shift'),
     'description' => __('Sitios', 'kudi-shift'),
     'labels' => $labels,
     'supports' => array('title', 'thumbnail'),
@@ -76,8 +76,8 @@ function register_journals_post_type()
 {
   $labels = array(
     'name' => _x('Jornadas', 'Post Type General Name', 'kudi-shift'),
-    'singular_name' => _x('Jornada', 'Post Type Singular Name', 'kudi-shift'),
-    'menu_name' => __('Jornada', 'kudi-shift'),
+    'singular_name' => _x('Jornadas', 'Post Type Singular Name', 'kudi-shift'),
+    'menu_name' => __('Jornadas', 'kudi-shift'),
     'name_admin_bar' => __('Jornada', 'kudi-shift'),
     'archives' => __('Archivo de jornadas', 'kudi-shift'),
     'attributes' => __('Atributos de la jornada', 'kudi-shift'),
@@ -150,7 +150,7 @@ function register_shifts_post_type()
   $labels = array(
     'name' => _x('Turnos', 'Post Type General Name', 'kudi-shift'),
     'singular_name' => _x('Turno', 'Post Type Singular Name', 'kudi-shift'),
-    'menu_name' => __('Turno', 'kudi-shift'),
+    'menu_name' => __('Turnos', 'kudi-shift'),
     'name_admin_bar' => __('Turno', 'kudi-shift'),
     'archives' => __('Archivo de turnos', 'kudi-shift'),
     'attributes' => __('Atributos del turno', 'kudi-shift'),
