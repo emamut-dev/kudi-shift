@@ -33,6 +33,31 @@ add_action( 'acf/include_fields', function() {
 			'bidirectional_target' => array(
 			),
 		),
+		array(
+			'key' => 'field_69d7d4cf507ac',
+			'label' => 'Modelos',
+			'name' => 'modelos',
+			'aria-label' => '',
+			'type' => 'user',
+			'instructions' => '',
+			'required' => 1,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'role' => array(
+				0 => 'subscriber',
+			),
+			'return_format' => 'id',
+			'multiple' => 1,
+			'allow_null' => 0,
+			'allow_in_bindings' => 0,
+			'bidirectional' => 0,
+			'bidirectional_target' => array(
+			),
+		),
 	),
 	'location' => array(
 		array(
@@ -53,6 +78,8 @@ add_action( 'acf/include_fields', function() {
 	'description' => '',
 	'show_in_rest' => 1,
 	'display_title' => '',
+	'allow_ai_access' => false,
+	'ai_description' => '',
 ) );
 
 	acf_add_local_field_group( array(
