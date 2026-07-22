@@ -1,39 +1,51 @@
 <template>
-  <form @submit.prevent="enviar">
-    <input v-model="form.titulo" placeholder="Título" required />
-    <input v-model="form.email" type="email" placeholder="Email" required />
-    <textarea v-model="form.mensaje" placeholder="Mensaje"></textarea>
-    <button type="submit" :disabled="cargando">
-      {{ cargando ? 'Enviando...' : 'Enviar' }}
-    </button>
-    <p v-if="resultado">{{ resultado }}</p>
-  </form>
+  <section class="shifts">
+    <h1>Turnos</h1>
+
+    <p v-if="isLoading">Cargando turnos...</p>
+    <p v-else-if="errorMessage" role="alert">{{ errorMessage }}</p>
+    <p v-else-if="shiftsArray.length === 0">No hay turnos disponibles.</p>
+    <table v-else>
+      <thead>
+        <tr>
+          <th scope="col">Fecha del turno</th>
+          <th scope="col">Contenido</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="shift in shiftsArray" :key="shift.id">
+          <td>{{ shift.fecha_turno }}</td>
+          <td>{{ shift.contenido }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
-const form = ref({ titulo: '', email: '', mensaje: '' });
-const cargando = ref(false);
-const resultado = ref('');
+const shiftsArray = ref([]);
+const isLoading = ref(true);
+const errorMessage = ref('');
 
-async function enviar() {
-  cargando.value = true;
+async function getShifts() {
   try {
-    const res = await fetch(mpvsData.restUrl + 'submit', {
-      method: 'POST',
+    const res = await fetch(kudiShiftData.restUrl + 'shifts', {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'X-WP-Nonce': mpvsData.nonce, // necesario si el endpoint requiere auth
+        'X-WP-Nonce': kudiShiftData.nonce,
       },
-      body: JSON.stringify(form.value),
     });
     const data = await res.json();
-    resultado.value = data.success ? '¡Guardado correctamente!' : data.error;
+    shiftsArray.value = data;
   } catch (e) {
-    resultado.value = 'Error de red';
+    errorMessage.value = 'No se pudieron cargar los turnos.';
   } finally {
-    cargando.value = false;
+    isLoading.value = false;
   }
 }
+
+onMounted(getShifts);
 </script>

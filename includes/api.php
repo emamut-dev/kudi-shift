@@ -6,40 +6,45 @@ class KUDI_SHIFT_REST_API {
   }
 
   public function register_routes() {
-    register_rest_route( 'kudi-shift/v1', '/submit', array(
-      'methods'             => 'POST',
-      'callback'            => array( $this, 'handle_submit' ),
-      'permission_callback' => '__return_true', // ajusta según tu caso
+    register_rest_route( 'kudi-shift/v1', '/shifts', array(
+      'methods'             => 'GET',
+      'callback'            => array( $this, 'get_shifts' ),
+      'permission_callback' => '__return_true',
     ) );
   }
 
-  public function handle_submit( WP_REST_Request $request ) {
-    $params = $request->get_json_params();
-
-    // Validación básica
-    if ( empty( $params['titulo'] ) ) {
-      return new WP_REST_Response( array( 'error' => 'Falta el título' ), 400 );
-    }
-
-    // Creamos (o actualizamos) el post
-    $post_id = wp_insert_post( array(
-      'post_type'   => 'sites', // tu custom post type
-      'post_title'  => sanitize_text_field( $params['titulo'] ),
+  public function get_shifts(  ) {
+    // Lógica para obtener los turnos
+    $args = array(
+      'post_type' => 'shifts',
       'post_status' => 'publish',
-    ) );
+      'numberposts' => -1,
+    );
 
-    if ( is_wp_error( $post_id ) ) {
-      return new WP_REST_Response( array( 'error' => 'No se pudo guardar' ), 500 );
+    $shifts = get_posts( $args );
+
+    $data = array();
+    foreach ( $shifts as $shift ) {
+      $data[] = array(
+        'id' => $shift->ID,
+        'fecha_turno' => $this->format_date( $shift->post_title ),
+        'contenido' => apply_filters( 'post_content', $shift->post_content ),
+      );
+    }
+    return new WP_REST_Response( $data, 200 );
+  }
+
+  private function format_date( $date_string ) {
+    foreach ( array( 'Ymd', 'd/m/Y', 'Y-m-d' ) as $format ) {
+      $date = DateTime::createFromFormat( $format, $date_string );
+      $errors = DateTime::getLastErrors();
+
+      if ( $date && ( $errors === false || ( $errors['warning_count'] === 0 && $errors['error_count'] === 0 ) ) ) {
+        return $date->format( 'l d-m-Y' );
+      }
     }
 
-    // Guardamos los campos SCF
-    update_field( 'email_contacto', sanitize_email( $params['email'] ), $post_id );
-    update_field( 'mensaje', sanitize_textarea_field( $params['mensaje'] ), $post_id );
-
-    return new WP_REST_Response( array(
-      'success' => true,
-      'post_id' => $post_id,
-    ), 200 );
+    return '';
   }
 }
 

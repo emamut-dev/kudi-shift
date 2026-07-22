@@ -13,14 +13,13 @@ class Kudi_Shift_Admin_Page {
       'manage_options',         // Capacidad requerida
       'kudi-shift-formulario',  // Slug único
       array( $this, 'render_page' ), // Callback que pinta el HTML
-      'dashicons-forms',        // Icono
+      'dashicons-money-alt',        // Icono
       40                        // Posición en el menú
     );
   }
 
   public function render_page() {
     echo '<div class="wrap">';
-    echo '<h1>Turnos</h1>';
     echo '<div id="kudi-shift-app"></div>'; // Aquí se monta Vue
     echo '</div>';
   }
