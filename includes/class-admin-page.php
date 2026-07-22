@@ -8,19 +8,19 @@ class Kudi_Shift_Admin_Page {
 
   public function add_menu_page() {
     add_menu_page(
-      'Mi Formulario Vue',      // Título de la página
-      'Formulario Vue',         // Título en el menú
+      'Turnos',      // Título de la página
+      'Turnos',         // Título en el menú
       'manage_options',         // Capacidad requerida
       'kudi-shift-formulario',  // Slug único
       array( $this, 'render_page' ), // Callback que pinta el HTML
       'dashicons-forms',        // Icono
-      25                        // Posición en el menú
+      40                        // Posición en el menú
     );
   }
 
   public function render_page() {
     echo '<div class="wrap">';
-    echo '<h1>Mi Formulario Vue + SCF</h1>';
+    echo '<h1>Turnos</h1>';
     echo '<div id="kudi-shift-app"></div>'; // Aquí se monta Vue
     echo '</div>';
   }

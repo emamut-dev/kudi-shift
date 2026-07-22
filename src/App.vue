@@ -1,4 +1,3 @@
-<!-- src/App.vue -->
 <template>
   <form @submit.prevent="enviar">
     <input v-model="form.titulo" placeholder="Título" required />
