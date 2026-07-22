@@ -258,5 +258,89 @@ add_action( 'acf/include_fields', function() {
 	'show_in_rest' => 1,
 	'display_title' => '',
 ) );
+acf_add_local_field_group( array(
+	'key' => 'group_6a60d895186cc',
+	'title' => 'Sitios',
+	'fields' => array(
+		array(
+			'key' => 'field_6a60d895e058f',
+			'label' => '¿En dólares?',
+			'name' => 'dollars',
+			'aria-label' => '',
+			'type' => 'radio',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '',
+				'class' => '',
+				'id' => '',
+			),
+			'choices' => array(
+				'yes' => 'Si',
+				'no' => 'No',
+			),
+			'default_value' => 'no',
+			'return_format' => 'value',
+			'allow_null' => 0,
+			'other_choice' => 0,
+			'allow_in_bindings' => 0,
+			'layout' => 'vertical',
+			'save_other_choice' => 0,
+		),
+		array(
+			'key' => 'field_6a60d97cc8120',
+			'label' => 'Valor del Token',
+			'name' => 'token_value',
+			'aria-label' => '',
+			'type' => 'number',
+			'instructions' => '',
+			'required' => 0,
+			'conditional_logic' => array(
+				array(
+					array(
+						'field' => 'field_6a60d895e058f',
+						'operator' => '==',
+						'value' => 'no',
+					),
+				),
+			),
+			'wrapper' => array(
+				'width' => '50',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '0,05',
+			'min' => '',
+			'max' => '',
+			'allow_in_bindings' => 0,
+			'placeholder' => '',
+			'step' => '',
+			'prepend' => '$',
+			'append' => 'USD',
+		),
+	),
+	'location' => array(
+		array(
+			array(
+				'param' => 'post_type',
+				'operator' => '==',
+				'value' => 'sites',
+			),
+		),
+	),
+	'menu_order' => 0,
+	'position' => 'normal',
+	'style' => 'default',
+	'label_placement' => 'top',
+	'instruction_placement' => 'label',
+	'hide_on_screen' => '',
+	'active' => true,
+	'description' => '',
+	'show_in_rest' => 0,
+	'display_title' => '',
+	'allow_ai_access' => false,
+	'ai_description' => '',
+) );
 } );
 
