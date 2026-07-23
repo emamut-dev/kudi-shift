@@ -50,7 +50,7 @@ add_action( 'acf/include_fields', function() {
 			'role' => array(
 				0 => 'subscriber',
 			),
-			'return_format' => 'id',
+			'return_format' => 'object',
 			'multiple' => 1,
 			'allow_null' => 0,
 			'allow_in_bindings' => 0,

@@ -6,6 +6,18 @@ class KUDI_SHIFT_REST_API {
   }
 
   public function register_routes() {
+    register_rest_route( 'kudi-shift/v1', '/journals', array(
+      'methods'             => 'GET',
+      'callback'            => array( $this, 'get_journals' ),
+      'permission_callback' => '__return_true',
+    ) );
+
+    register_rest_route( 'kudi-shift/v1', '/sitios', array(
+      'methods'             => 'GET',
+      'callback'            => array( $this, 'get_sitios' ),
+      'permission_callback' => '__return_true',
+    ) );
+
     register_rest_route( 'kudi-shift/v1', '/shifts', array(
       'methods'             => 'GET',
       'callback'            => array( $this, 'get_shifts' ),
@@ -13,8 +25,30 @@ class KUDI_SHIFT_REST_API {
     ) );
   }
 
-  public function get_shifts(  ) {
-    // Lógica para obtener los turnos
+  public function get_journals() {
+    $args = array(
+      'post_type' => 'journals',
+      'post_status' => 'publish',
+      'numberposts' => -1,
+    );
+
+    $journals = get_posts( $args );
+
+    $data = array();
+
+    foreach ( $journals as $journal ) {
+      $data[] = array(
+        'id' => $journal->ID,
+        'name' => $journal->post_title,
+        'monitor' => get_field( 'monitora', $journal->ID ),
+        'models' => get_field( 'modelos', $journal->ID ),
+      );
+    }
+
+    return new WP_REST_Response( $data, 200 );
+  }
+
+  public function get_shifts() {
     $args = array(
       'post_type' => 'shifts',
       'post_status' => 'publish',
@@ -29,6 +63,26 @@ class KUDI_SHIFT_REST_API {
         'id' => $shift->ID,
         'fecha_turno' => $this->format_date( $shift->post_title ),
         'contenido' => apply_filters( 'post_content', $shift->post_content ),
+      );
+    }
+    return new WP_REST_Response( $data, 200 );
+  }
+
+  public function get_sitios() {
+    $args = array(
+      'post_type' => 'sites',
+      'post_status' => 'publish',
+      'numberposts' => -1,
+    );
+
+    $sitios = get_posts( $args );
+
+    $data = array();
+    foreach ( $sitios as $sitio ) {
+      $data[] = array(
+        'id' => $sitio->ID,
+        'name' => $sitio->post_title,
+        'thumbnail' => get_the_post_thumbnail_url( $sitio->ID, 'full' ),
       );
     }
     return new WP_REST_Response( $data, 200 );
