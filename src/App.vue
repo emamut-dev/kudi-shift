@@ -28,7 +28,7 @@
         </div>
       </div>
       <div class="row justify-content-center mt-4">
-        <div class="col-md-10 table-responsive" v-if="selectedJournal">
+        <div class="col-md-8 table-responsive" v-if="selectedJournal">
           <table class="table table-bordered table-striped">
             <thead>
               <th class="text-center">Modelos</th>
@@ -52,6 +52,7 @@
                   <input
                     type="number"
                     min="0"
+                    class="form-control"
                     :data-modelo-id="modelo.ID"
                     :data-sitio-id="sitio.id"
                     v-model="formData[`${modelo.ID}-${sitio.id}`]"
@@ -61,26 +62,29 @@
             </tbody>
           </table>
 
-          <button type="submit" class="btn btn-success btn-lg mt-3">
+          <button
+            type="submit"
+            class="btn btn-success btn-lg mt-3 mx-auto d-block"
+          >
             Guardar Turno <BiFloppy class="ms-2" />
           </button>
         </div>
       </div>
     </form>
 
-    <div class="row mt-4">
-      <div class="col">
+    <div class="row justify-content-center mt-4">
+      <div class="col-md-8">
         <table class="table table-striped table-bordered">
           <thead>
             <tr>
               <th scope="col">Fecha del turno</th>
-              <th scope="col">Contenido</th>
+              <th scope="col" class="w-25">Total del turno</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="shift in shiftsArray" :key="shift.id">
-              <td>{{ shift.fecha_turno }}</td>
-              <td>{{ shift.contenido }}</td>
+              <td>{{ shift.journal_date }}</td>
+              <td>{{ shift.total_shift }} Tks</td>
             </tr>
           </tbody>
         </table>
@@ -145,7 +149,7 @@ async function getShifts() {
 
 async function submitForm() {
   const sendData = {
-    journal_date: selectedDate.value,
+    journal_date: selectedDate.value``,
     contenido: {
       id_journal: selectedJournal.value.id,
       data: { ...formData },

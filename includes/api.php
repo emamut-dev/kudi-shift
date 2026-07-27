@@ -54,6 +54,21 @@ class KUDI_SHIFT_REST_API {
     return new WP_REST_Response( $data, 200 );
   }
 
+  public function get_journal_by_id( $id ) {
+    $journal = get_post( $id );
+
+    if ( ! $journal || $journal->post_type !== 'journals' ) {
+      return new WP_REST_Response( array( 'error' => 'Journal not found.' ), 404 );
+    }
+
+    return new WP_REST_Response( array(
+      'id' => $journal->ID,
+      'name' => $journal->post_title,
+      'monitor' => get_field( 'monitora', $journal->ID ),
+      'models' => get_field( 'modelos', $journal->ID ),
+    ), 200 );
+  }
+
   public function get_shifts() {
     $args = array(
       'post_type' => 'shifts',
@@ -65,11 +80,7 @@ class KUDI_SHIFT_REST_API {
 
     $data = array();
     foreach ( $shifts as $shift ) {
-      $data[] = array(
-        'id' => $shift->ID,
-        'fecha_turno' => $this->format_date( $shift->post_title ),
-        'contenido' => apply_filters( 'post_content', $shift->post_content ),
-      );
+      $data[] = $this->get_complete_shift($shift);
     }
     return new WP_REST_Response( $data, 200 );
   }
@@ -121,6 +132,73 @@ class KUDI_SHIFT_REST_API {
     }
 
     return new WP_REST_Response( array( 'id' => $shift_id ), 201 );
+  }
+
+  private function get_complete_shift($shift_object) {
+    $contenido = json_decode($shift_object->post_content, true);
+    $data_result = array();
+    $previous_model = null;
+    $last_key = null;
+    $total_shift = 0;
+
+    foreach ( $contenido['data'] as $key => $tokens ) {
+      $key = explode( '-', $key );
+      $model_data = $this->get_model_by_id($key[0]);
+      $sitio_data = $this->get_site_by_id($key[1]);
+
+      if ( $previous_model !== $key[0] ) {
+        $data_result[] = array(
+          'model' => $model_data['name'],
+          $sitio_data['name'] => $tokens,
+        );
+        end( $data_result );
+        $last_key = key( $data_result );
+      } else {
+        $data_result[ $last_key ][ $sitio_data['name'] ] = $tokens;
+      }
+
+      $previous_model = $key[0];
+      $total_shift += $tokens;
+    }
+
+    return array(
+      'id' => $shift_object->ID,
+      'journal_date' => $this->format_date($shift_object->post_title),
+      'journal_date_numeric' => intval($shift_object->post_title),
+      'data' => $data_result,
+      'total_shift' => $total_shift,
+    );
+  }
+
+  private function get_model_by_id( $model_id ) {
+    $model_data = get_user_by( 'id', $model_id );
+
+    return array(
+      'id' => $model_id,
+      'name' => $model_data->display_name,
+    );
+  }
+
+  private function get_site_by_id( $site_id ) {
+    $args = array(
+      'post_type' => 'sites',
+      'post_status' => 'publish',
+      'p' => $site_id,
+    );
+
+    $sites = get_posts( $args );
+
+    if ( empty( $sites ) ) {
+      return null;
+    }
+
+    $site = $sites[0];
+
+    return array(
+      'id' => $site->ID,
+      'name' => $site->post_title,
+      'thumbnail' => get_the_post_thumbnail_url( $site->ID, 'full' ),
+    );
   }
 
   private function date_to_numeric( $date_string ) {
