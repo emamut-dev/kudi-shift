@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container-fluid">
     <div class="row">
       <div class="col">
         <h1 class="text-center fw-bold">Ingreso de Turno</h1>
@@ -34,6 +34,7 @@
               <th class="text-center">Modelos</th>
               <th
                 class="text-center"
+                style="width: 20px"
                 v-for="sitio in sitiosArray"
                 :key="sitio.id"
               >
@@ -41,7 +42,7 @@
               </th>
             </thead>
             <tbody>
-              <tr v-for="modelo in selectedJournal.models" :key="modelo.id">
+              <tr v-for="modelo in selectedJournal.models" :key="modelo.ID">
                 <td>{{ modelo.data.display_name }}</td>
                 <td
                   v-for="sitio in sitiosArray"
@@ -50,9 +51,10 @@
                 >
                   <input
                     type="number"
-                    value="0"
                     min="0"
-                    class="form-control-sm"
+                    :data-modelo-id="modelo.ID"
+                    :data-sitio-id="sitio.id"
+                    v-model="formData[`${modelo.ID}-${sitio.id}`]"
                   />
                 </td>
               </tr>
@@ -60,13 +62,13 @@
           </table>
 
           <button type="submit" class="btn btn-success btn-lg mt-3">
-            Guardar Turno <BiFloppy class="ms-2 icon" />
+            Guardar Turno <BiFloppy class="ms-2" />
           </button>
         </div>
       </div>
     </form>
 
-    <!-- <div class="row mt-4">
+    <div class="row mt-4">
       <div class="col">
         <table class="table table-striped table-bordered">
           <thead>
@@ -83,18 +85,12 @@
           </tbody>
         </table>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
-<style scoped>
-svg.icon {
-  font-size: 1em;
-}
-</style>
-
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import BiFloppy from '~icons/bi/floppy';
 
 const shiftsArray = ref([]);
@@ -102,9 +98,10 @@ const journalsArray = ref([]);
 const sitiosArray = ref([]);
 const selectedJournal = ref(null);
 const selectedDate = ref(new Date().toISOString().split('T')[0]);
-const formData = ref({});
+const formData = reactive({});
 
 const requestHeaders = {
+  Accept: 'application/json',
   'Content-Type': 'application/json',
   'X-WP-Nonce': kudiShiftData.nonce,
 };
@@ -147,7 +144,31 @@ async function getShifts() {
 }
 
 async function submitForm() {
-  // Implementation for form submission
+  const sendData = {
+    journal_date: selectedDate.value,
+    contenido: {
+      id_journal: selectedJournal.value.id,
+      data: { ...formData },
+    },
+  };
+
+  try {
+    const response = await fetch(`${kudiShiftData.restUrl}shifts`, {
+      method: 'POST',
+      headers: requestHeaders,
+      body: JSON.stringify(sendData),
+    });
+
+    if (!response.ok) {
+      throw new Error(response.statusText || 'Error al guardar el turno.');
+    }
+
+    // Clear form data after successful submission
+    Object.keys(formData).forEach((key) => delete formData[key]);
+    await getShifts(); // Refresh shifts list
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 onMounted(async () => {
