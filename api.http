@@ -1,0 +1,1 @@
+GET http://localhost:8020/index.php?rest_route=/kudi-shift/v1/journals
