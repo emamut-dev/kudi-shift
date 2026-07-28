@@ -71,9 +71,11 @@ class KUDI_SHIFT_REST_API {
 
   public function get_shifts() {
     $args = array(
-      'post_type' => 'shifts',
+      'post_type'   => 'shifts',
       'post_status' => 'publish',
       'numberposts' => -1,
+      'orderby'     => 'post_title',
+      'order'       => 'ASC',
     );
 
     $shifts = get_posts( $args );
