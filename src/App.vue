@@ -74,7 +74,7 @@
 
     <div class="row justify-content-center mt-4">
       <div class="col-md-8">
-        <Bar
+        <Line
           v-if="chartData.datasets?.length"
           :data="chartData"
           :options="chartOptions"
@@ -87,13 +87,14 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue';
 import BiFloppy from '~icons/bi/floppy';
-import { Bar } from 'vue-chartjs';
+import { Line } from 'vue-chartjs';
 import {
   Chart as ChartJS,
   Title,
   Tooltip,
   Legend,
-  BarElement,
+  LineElement,
+  PointElement,
   CategoryScale,
   LinearScale,
 } from 'chart.js';
@@ -117,7 +118,8 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  BarElement,
+  LineElement,
+  PointElement,
   CategoryScale,
   LinearScale,
 );
@@ -207,7 +209,12 @@ async function getChartData(data) {
     datasets: [
       {
         label: 'Turnos',
-        backgroundColor: '#41B883',
+        borderColor: '#41B883',
+        backgroundColor: 'rgba(65, 184, 131, 0.2)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 4,
+        pointHoverRadius: 6,
         data: values,
       },
     ],
