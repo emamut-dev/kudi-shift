@@ -13,10 +13,14 @@ if (!defined('ABSPATH')) { exit; }
 define( 'KUDI_SHIFT_PATH', plugin_dir_path( __FILE__ ) );
 define( 'KUDI_SHIFT_URL', plugin_dir_url( __FILE__ ) );
 
+// require_once __DIR__ . '/vendor/autoload.php';
+// require_once __DIR__ . '/includes/autoupdate.php';
+
 require_once dirname(__FILE__) . '/helpers/enqueue_scripts.php';
 require_once dirname(__FILE__) . '/helpers/custom-post-types.php';
 require_once dirname(__FILE__) . '/helpers/custom-fields.php';
 require_once dirname(__FILE__) . '/helpers/cpt-fixes.php';
+
 require_once KUDI_SHIFT_PATH . 'includes/class-admin-page.php';
 require_once KUDI_SHIFT_PATH . 'includes/api.php';
 
