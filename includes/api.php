@@ -227,7 +227,21 @@ class KUDI_SHIFT_REST_API {
       $errors = DateTime::getLastErrors();
 
       if ( $date && ( $errors === false || ( $errors['warning_count'] === 0 && $errors['error_count'] === 0 ) ) ) {
-        return $date->format( 'l d-m-Y' );
+        if ( class_exists( 'IntlDateFormatter' ) ) {
+          $formatter = new IntlDateFormatter(
+            'es_CO',
+            IntlDateFormatter::FULL,
+            IntlDateFormatter::NONE,
+            $date->getTimezone()->getName(),
+            IntlDateFormatter::GREGORIAN,
+            'EEEE dd-MM-yyyy'
+          );
+
+          return $formatter->format( $date );
+        }
+
+        setlocale( LC_TIME, 'es_CO.UTF-8', 'es_CO', 'es', 'Spanish_Colombia.1252' );
+        return strftime( '%A %d-%m-%Y', $date->getTimestamp() );
       }
     }
 
