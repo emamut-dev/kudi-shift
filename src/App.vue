@@ -34,7 +34,6 @@
               <th class="text-center">Modelos</th>
               <th
                 class="text-center"
-                style="width: 20px"
                 v-for="sitio in sitiosArray"
                 :key="sitio.id"
               >
