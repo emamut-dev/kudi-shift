@@ -74,20 +74,11 @@
 
     <div class="row justify-content-center mt-4">
       <div class="col-md-8">
-        <table class="table table-striped table-bordered">
-          <thead>
-            <tr>
-              <th scope="col">Fecha del turno</th>
-              <th scope="col" class="w-25">Total del turno</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="shift in shiftsArray" :key="shift.id">
-              <td>{{ shift.journal_date }}</td>
-              <td>{{ shift.total_shift }} Tks</td>
-            </tr>
-          </tbody>
-        </table>
+        <Bar
+          v-if="chartData.datasets?.length"
+          :data="chartData"
+          :options="chartOptions"
+        />
       </div>
     </div>
   </div>
@@ -96,6 +87,16 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue';
 import BiFloppy from '~icons/bi/floppy';
+import { Bar } from 'vue-chartjs';
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+} from 'chart.js';
 
 const shiftsArray = ref([]);
 const journalsArray = ref([]);
@@ -103,11 +104,27 @@ const sitiosArray = ref([]);
 const selectedJournal = ref(null);
 const selectedDate = ref(new Date().toISOString().split('T')[0]);
 const formData = reactive({});
+const errorMessage = ref('');
+const chartData = ref({ labels: [], datasets: [] });
 
 const requestHeaders = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
   'X-WP-Nonce': kudiShiftData.nonce,
+};
+
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+);
+
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
 };
 
 async function fetchCollection(endpoint, targetArray, errorText) {
@@ -145,11 +162,13 @@ async function getShifts() {
     shiftsArray,
     'No se pudieron cargar los turnos.',
   );
+
+  getChartData(shiftsArray.value);
 }
 
 async function submitForm() {
   const sendData = {
-    journal_date: selectedDate.value``,
+    journal_date: selectedDate.value,
     contenido: {
       id_journal: selectedJournal.value.id,
       data: { ...formData },
@@ -175,11 +194,32 @@ async function submitForm() {
   }
 }
 
+async function getChartData(data) {
+  const shiftItems = Array.isArray(data) ? data : [];
+  const labels = shiftItems.map((shift) => shift.journal_date || 'Sin fecha');
+  const values = shiftItems.map((shift) => {
+    const totalValue = shift?.total_shift ?? shift?.contenido?.data?.total ?? 0;
+    return Number(totalValue) || 0;
+  });
+
+  chartData.value = {
+    labels,
+    datasets: [
+      {
+        label: 'Turnos',
+        backgroundColor: '#41B883',
+        data: values,
+      },
+    ],
+  };
+}
+
 onMounted(async () => {
   try {
     await Promise.all([getJournals(), getSitios(), getShifts()]);
   } catch (error) {
     errorMessage.value = error.message;
+    console.error(error);
   }
 });
 </script>
