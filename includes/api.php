@@ -24,6 +24,18 @@ class KUDI_SHIFT_REST_API {
       'permission_callback' => '__return_true',
     ) );
 
+    register_rest_route( 'kudi-shift/v1', '/shifts/last', array(
+      'methods'             => 'GET',
+      'callback'            => array( $this, 'get_last_shift' ),
+      'permission_callback' => '__return_true',
+    ) );
+
+    register_rest_route( 'kudi-shift/v1', '/shifts/(?P<id>\\d+)', array(
+      'methods'             => 'GET',
+      'callback'            => array( $this, 'get_shift_by_id' ),
+      'permission_callback' => '__return_true',
+    ) );
+
     register_rest_route( 'kudi-shift/v1', '/shifts', array(
       'methods'             => 'POST',
       'callback'            => array( $this, 'save_shift' ),
@@ -85,6 +97,42 @@ class KUDI_SHIFT_REST_API {
       $data[] = $this->get_complete_shift($shift);
     }
     return new WP_REST_Response( $data, 200 );
+  }
+
+  public function get_shift_by_id( $request ) {
+    $shift_id = (int) $request->get_param( 'id' );
+
+    if ( $shift_id <= 0 ) {
+      return new WP_REST_Response( array( 'error' => 'Invalid shift ID.' ), 400 );
+    }
+
+    $shift = get_post( $shift_id );
+
+    if ( ! $shift || $shift->post_type !== 'shifts' ) {
+      return new WP_REST_Response( array( 'error' => 'Shift not found.' ), 404 );
+    }
+
+    return new WP_REST_Response( $this->get_complete_shift( $shift ), 200 );
+  }
+
+  public function get_last_shift() {
+    $args = array(
+      'post_type'      => 'shifts',
+      'post_status'    => 'publish',
+      'posts_per_page' => 1,
+      'orderby'        => 'ID',
+      'order'          => 'DESC',
+    );
+
+    $shift_query = new WP_Query( $args );
+
+    if ( empty( $shift_query->posts ) ) {
+      return new WP_REST_Response( array( 'error' => 'No shift found.' ), 404 );
+    }
+
+    $shift = $shift_query->posts[0];
+
+    return new WP_REST_Response( $this->get_complete_shift( $shift ), 200 );
   }
 
   public function get_sitios() {
