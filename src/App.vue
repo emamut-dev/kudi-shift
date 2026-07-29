@@ -71,41 +71,92 @@
       </div>
     </form>
 
-    <div class="row justify-content-center mt-4">
+    <div class="row justify-content-center mt-4" v-if="lastShift?.data?.length">
       <div class="col-md-8">
-        <Line
-          v-if="chartData.datasets?.length"
-          :data="chartData"
-          :options="chartOptions"
-        />
+        <h4 class="text-center fw-bold mb-3">
+          Último turno: {{ lastShift['journal_date'] }}
+        </h4>
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Modelo</th>
+                <th v-for="column in lastShiftColumns" :key="column">
+                  {{ column }}
+                </th>
+                <th>Total modelo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, index) in lastShift.data" :key="index">
+                <td>{{ row.model }}</td>
+                <td
+                  class="text-center"
+                  v-for="column in lastShiftColumns"
+                  :key="`${index}-${column}`"
+                >
+                  {{ row[column] ?? '-' }}
+                </td>
+                <td class="text-center fw-bold">
+                  {{
+                    Object.values(row)
+                      .filter((value) => typeof value === 'number')
+                      .reduce((sum, value) => sum + value, 0)
+                  }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <h2 class="text-center fw-bold">
+          Total del turno: {{ lastShift.total_shift }}
+        </h2>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import BiFloppy from '~icons/bi/floppy';
-import { Line } from 'vue-chartjs';
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-} from 'chart.js';
+// import { Line } from 'vue-chartjs';
+// import {
+//   Chart as ChartJS,
+//   Title,
+//   Tooltip,
+//   Legend,
+//   LineElement,
+//   PointElement,
+//   CategoryScale,
+//   LinearScale,
+// } from 'chart.js';
 
 const shiftsArray = ref([]);
 const journalsArray = ref([]);
 const sitiosArray = ref([]);
 const selectedJournal = ref(null);
 const selectedDate = ref(new Date().toISOString().split('T')[0]);
+const lastShift = ref(null);
 const formData = reactive({});
 const errorMessage = ref('');
-const chartData = ref({ labels: [], datasets: [] });
+// const chartData = ref({ labels: [], datasets: [] });
+
+const lastShiftColumns = computed(() => {
+  if (!lastShift.value?.data?.length) {
+    return [];
+  }
+
+  const columns = new Set();
+  lastShift.value.data.forEach((row) => {
+    Object.keys(row).forEach((key) => {
+      if (key !== 'model') {
+        columns.add(key);
+      }
+    });
+  });
+
+  return Array.from(columns);
+});
 
 const requestHeaders = {
   Accept: 'application/json',
@@ -113,20 +164,20 @@ const requestHeaders = {
   'X-WP-Nonce': kudiShiftData.nonce,
 };
 
-ChartJS.register(
-  Title,
-  Tooltip,
-  Legend,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-);
+// ChartJS.register(
+//   Title,
+//   Tooltip,
+//   Legend,
+//   LineElement,
+//   PointElement,
+//   CategoryScale,
+//   LinearScale,
+// );
 
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-};
+// const chartOptions = {
+//   responsive: true,
+//   maintainAspectRatio: false,
+// };
 
 async function fetchCollection(endpoint, targetArray, errorText) {
   const response = await fetch(`${kudiShiftData.restUrl}${endpoint}`, {
@@ -164,7 +215,16 @@ async function getShifts() {
     'No se pudieron cargar los turnos.',
   );
 
-  getChartData(shiftsArray.value);
+  getLastShift();
+  // getChartData(shiftsArray.value);
+}
+
+async function getLastShift() {
+  await fetchCollection(
+    'shifts/last',
+    lastShift,
+    'No se pudo cargar el ultimo turno.',
+  );
 }
 
 async function submitForm() {
@@ -195,30 +255,30 @@ async function submitForm() {
   }
 }
 
-async function getChartData(data) {
-  const shiftItems = Array.isArray(data) ? data : [];
-  const labels = shiftItems.map((shift) => shift.journal_date || 'Sin fecha');
-  const values = shiftItems.map((shift) => {
-    const totalValue = shift?.total_shift ?? shift?.contenido?.data?.total ?? 0;
-    return Number(totalValue) || 0;
-  });
+// async function getChartData(data) {
+//   const shiftItems = Array.isArray(data) ? data : [];
+//   const labels = shiftItems.map((shift) => shift.journal_date || 'Sin fecha');
+//   const values = shiftItems.map((shift) => {
+//     const totalValue = shift?.total_shift ?? shift?.contenido?.data?.total ?? 0;
+//     return Number(totalValue) || 0;
+//   });
 
-  chartData.value = {
-    labels,
-    datasets: [
-      {
-        label: 'Turnos',
-        borderColor: '#41B883',
-        backgroundColor: 'rgba(65, 184, 131, 0.2)',
-        fill: true,
-        tension: 0.3,
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        data: values,
-      },
-    ],
-  };
-}
+//   chartData.value = {
+//     labels,
+//     datasets: [
+//       {
+//         label: 'Turnos',
+//         borderColor: '#41B883',
+//         backgroundColor: 'rgba(65, 184, 131, 0.2)',
+//         fill: true,
+//         tension: 0.3,
+//         pointRadius: 4,
+//         pointHoverRadius: 6,
+//         data: values,
+//       },
+//     ],
+//   };
+// }
 
 onMounted(async () => {
   try {
