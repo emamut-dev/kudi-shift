@@ -71,17 +71,7 @@
       </div>
     </form>
 
-    <div class="row justify-content-center mt-4">
-      <div class="col-md-8">
-        <Line
-          v-if="chartData.datasets?.length"
-          :data="chartData"
-          :options="chartOptions"
-        />
-      </div>
-    </div>
-
-    <div class="row justify-content-center mt-4" v-if="lastShift?.data?.length">
+    <div class="row justify-content-center mt-5" v-if="lastShift?.data?.length">
       <div class="col-md-8">
         <h4 class="text-center fw-bold mb-3">
           Último turno: {{ lastShift['journal_date'] }}
@@ -118,9 +108,19 @@
             </tbody>
           </table>
         </div>
-        <h2 class="text-center fw-bold">
-          Total del turno: {{ lastShift.total_shift }}
-        </h2>
+        <h4 class="text-center fw-bold">
+          Total del turno: {{ lastShift.total_shift }} Tks
+        </h4>
+      </div>
+    </div>
+
+    <div class="row justify-content-center mt-5">
+      <div class="col-md-8">
+        <Line
+          v-if="chartData.datasets?.length"
+          :data="chartData"
+          :options="chartOptions"
+        />
       </div>
     </div>
   </div>
@@ -277,7 +277,7 @@ async function getChartData(data) {
     labels,
     datasets: [
       {
-        label: 'Turnos',
+        label: 'Tokens',
         borderColor: '#41B883',
         backgroundColor: 'rgba(65, 184, 131, 0.2)',
         fill: true,
