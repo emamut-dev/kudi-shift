@@ -4,6 +4,7 @@
  * Description: Plugin que permite obtener manualmente los tokens por modelo y por turno, generando los reportes necesarios para la administración del estudio.
  * Version: 1.0.1
  * Author: emamut
+ * Update URI: https://github.com/emamut-dev/kudi-shift
  * Author URI: https://emamut.netlify.app/
 */
 
