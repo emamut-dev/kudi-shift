@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Kudi Shift
  * Description: Plugin que permite obtener manualmente los tokens por modelo y por turno, generando los reportes necesarios para la administración del estudio.
- * Version: 1.0
+ * Version: 1.0.1
  * Author: emamut
  * Author URI: https://emamut.netlify.app/
 */
