@@ -5,41 +5,45 @@ class KUDI_SHIFT_REST_API {
     add_action( 'rest_api_init', array( $this, 'register_routes' ) );
   }
 
+  public function permission_check() {
+    return kudi_shift_user_can_access_plugin();
+  }
+
   public function register_routes() {
     register_rest_route( 'kudi-shift/v1', '/journals', array(
       'methods'             => 'GET',
       'callback'            => array( $this, 'get_journals' ),
-      'permission_callback' => '__return_true',
+      'permission_callback' => array( $this, 'permission_check' ),
     ) );
 
     register_rest_route( 'kudi-shift/v1', '/sitios', array(
       'methods'             => 'GET',
       'callback'            => array( $this, 'get_sitios' ),
-      'permission_callback' => '__return_true',
+      'permission_callback' => array( $this, 'permission_check' ),
     ) );
 
     register_rest_route( 'kudi-shift/v1', '/shifts', array(
       'methods'             => 'GET',
       'callback'            => array( $this, 'get_shifts' ),
-      'permission_callback' => '__return_true',
+      'permission_callback' => array( $this, 'permission_check' ),
     ) );
 
     register_rest_route( 'kudi-shift/v1', '/shifts/last', array(
       'methods'             => 'GET',
       'callback'            => array( $this, 'get_last_shift' ),
-      'permission_callback' => '__return_true',
+      'permission_callback' => array( $this, 'permission_check' ),
     ) );
 
     register_rest_route( 'kudi-shift/v1', '/shifts/(?P<id>\\d+)', array(
       'methods'             => 'GET',
       'callback'            => array( $this, 'get_shift_by_id' ),
-      'permission_callback' => '__return_true',
+      'permission_callback' => array( $this, 'permission_check' ),
     ) );
 
     register_rest_route( 'kudi-shift/v1', '/shifts', array(
       'methods'             => 'POST',
       'callback'            => array( $this, 'save_shift' ),
-      'permission_callback' => '__return_true',
+      'permission_callback' => array( $this, 'permission_check' ),
     ) );
   }
 

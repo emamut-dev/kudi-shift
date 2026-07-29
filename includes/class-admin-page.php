@@ -7,18 +7,26 @@ class Kudi_Shift_Admin_Page {
   }
 
   public function add_menu_page() {
+    if ( ! kudi_shift_user_can_access_plugin() ) {
+      return;
+    }
+
     add_menu_page(
-      'Turnos',      // Título de la página
-      'Turnos',         // Título en el menú
-      'manage_options',         // Capacidad requerida
-      'kudi-shift-formulario',  // Slug único
+      'Turnos',                   // Título de la página
+      'Turnos',                   // Título en el menú
+      'read',                     // Capacidad requerida para usuarios autenticados
+      'kudi-shift-formulario',    // Slug único
       array( $this, 'render_page' ), // Callback que pinta el HTML
-      'dashicons-money-alt',        // Icono
-      40                        // Posición en el menú
+      'dashicons-money-alt',     // Icono
+      40                          // Posición en el menú
     );
   }
 
   public function render_page() {
+    if ( ! kudi_shift_user_can_access_plugin() ) {
+      wp_die( esc_html__( 'No tienes permisos para acceder a este plugin.', 'kudi-shift' ) );
+    }
+
     echo '<div class="wrap">';
     echo '<div id="kudi-shift-app"></div>'; // Aquí se monta Vue
     echo '</div>';

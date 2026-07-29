@@ -14,6 +14,21 @@ if (!defined('ABSPATH')) { exit; }
 define( 'KUDI_SHIFT_PATH', plugin_dir_path( __FILE__ ) );
 define( 'KUDI_SHIFT_URL', plugin_dir_url( __FILE__ ) );
 
+function kudi_shift_user_can_access_plugin() {
+  if ( ! is_user_logged_in() ) {
+    return false;
+  }
+
+  $user = wp_get_current_user();
+  $roles = (array) $user->roles;
+
+  return ! in_array( 'subscriber', $roles, true );
+}
+
+function kudi_shift_rest_permission_check() {
+  return kudi_shift_user_can_access_plugin();
+}
+
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/includes/autoupdate.php';
 
