@@ -71,6 +71,16 @@
       </div>
     </form>
 
+    <div class="row justify-content-center mt-4">
+      <div class="col-md-8">
+        <Line
+          v-if="chartData.datasets?.length"
+          :data="chartData"
+          :options="chartOptions"
+        />
+      </div>
+    </div>
+
     <div class="row justify-content-center mt-4" v-if="lastShift?.data?.length">
       <div class="col-md-8">
         <h4 class="text-center fw-bold mb-3">
@@ -119,17 +129,17 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue';
 import BiFloppy from '~icons/bi/floppy';
-// import { Line } from 'vue-chartjs';
-// import {
-//   Chart as ChartJS,
-//   Title,
-//   Tooltip,
-//   Legend,
-//   LineElement,
-//   PointElement,
-//   CategoryScale,
-//   LinearScale,
-// } from 'chart.js';
+import { Line } from 'vue-chartjs';
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+  CategoryScale,
+  LinearScale,
+} from 'chart.js';
 
 const shiftsArray = ref([]);
 const journalsArray = ref([]);
@@ -139,7 +149,7 @@ const selectedDate = ref(new Date().toISOString().split('T')[0]);
 const lastShift = ref(null);
 const formData = reactive({});
 const errorMessage = ref('');
-// const chartData = ref({ labels: [], datasets: [] });
+const chartData = ref({ labels: [], datasets: [] });
 
 const lastShiftColumns = computed(() => {
   if (!lastShift.value?.data?.length) {
@@ -164,20 +174,20 @@ const requestHeaders = {
   'X-WP-Nonce': kudiShiftData.nonce,
 };
 
-// ChartJS.register(
-//   Title,
-//   Tooltip,
-//   Legend,
-//   LineElement,
-//   PointElement,
-//   CategoryScale,
-//   LinearScale,
-// );
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+  CategoryScale,
+  LinearScale,
+);
 
-// const chartOptions = {
-//   responsive: true,
-//   maintainAspectRatio: false,
-// };
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+};
 
 async function fetchCollection(endpoint, targetArray, errorText) {
   const response = await fetch(`${kudiShiftData.restUrl}${endpoint}`, {
@@ -216,7 +226,7 @@ async function getShifts() {
   );
 
   getLastShift();
-  // getChartData(shiftsArray.value);
+  getChartData(shiftsArray.value);
 }
 
 async function getLastShift() {
@@ -255,30 +265,30 @@ async function submitForm() {
   }
 }
 
-// async function getChartData(data) {
-//   const shiftItems = Array.isArray(data) ? data : [];
-//   const labels = shiftItems.map((shift) => shift.journal_date || 'Sin fecha');
-//   const values = shiftItems.map((shift) => {
-//     const totalValue = shift?.total_shift ?? shift?.contenido?.data?.total ?? 0;
-//     return Number(totalValue) || 0;
-//   });
+async function getChartData(data) {
+  const shiftItems = Array.isArray(data) ? data : [];
+  const labels = shiftItems.map((shift) => shift.journal_date || 'Sin fecha');
+  const values = shiftItems.map((shift) => {
+    const totalValue = shift?.total_shift ?? shift?.contenido?.data?.total ?? 0;
+    return Number(totalValue) || 0;
+  });
 
-//   chartData.value = {
-//     labels,
-//     datasets: [
-//       {
-//         label: 'Turnos',
-//         borderColor: '#41B883',
-//         backgroundColor: 'rgba(65, 184, 131, 0.2)',
-//         fill: true,
-//         tension: 0.3,
-//         pointRadius: 4,
-//         pointHoverRadius: 6,
-//         data: values,
-//       },
-//     ],
-//   };
-// }
+  chartData.value = {
+    labels,
+    datasets: [
+      {
+        label: 'Turnos',
+        borderColor: '#41B883',
+        backgroundColor: 'rgba(65, 184, 131, 0.2)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        data: values,
+      },
+    ],
+  };
+}
 
 onMounted(async () => {
   try {
