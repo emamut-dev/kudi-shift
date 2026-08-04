@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import router from './router';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -24,4 +25,4 @@ ChartJS.register(
   LinearScale,
 );
 
-createApp(App).mount('#kudi-shift-app');
+createApp(App).use(router).mount('#kudi-shift-app');
