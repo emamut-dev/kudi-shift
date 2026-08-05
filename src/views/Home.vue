@@ -20,39 +20,44 @@
         />
       </div>
     </div>
+
     <div class="row justify-content-center mt-4">
-      <div class="col-md-8 table-responsive" v-if="selectedJournal">
-        <table class="table table-bordered table-striped">
-          <thead>
-            <th class="text-center">Modelos</th>
-            <th
-              class="text-center"
-              v-for="sitio in sitiosArray"
-              :key="sitio.id"
-            >
-              {{ sitio.name }}
-            </th>
-          </thead>
-          <tbody>
-            <tr v-for="modelo in selectedJournal.models" :key="modelo.ID">
-              <td>{{ modelo.data.display_name }}</td>
-              <td
-                v-for="sitio in sitiosArray"
-                :key="sitio.id"
-                class="text-center"
-              >
-                <input
-                  type="number"
-                  min="0"
-                  class="form-control"
-                  :data-modelo-id="modelo.ID"
-                  :data-sitio-id="sitio.id"
-                  v-model="formData[`${modelo.ID}-${sitio.id}`]"
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="col-md-8" v-if="selectedJournal">
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th class="text-center">Modelos</th>
+                <th
+                  class="text-center"
+                  v-for="sitio in sitiosArray"
+                  :key="sitio.id"
+                >
+                  {{ sitio.name }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="modelo in selectedJournal.models" :key="modelo.ID">
+                <td>{{ modelo.data.display_name }}</td>
+                <td
+                  v-for="sitio in sitiosArray"
+                  :key="sitio.id"
+                  class="text-center"
+                >
+                  <input
+                    type="number"
+                    min="0"
+                    class="form-control"
+                    :data-modelo-id="modelo.ID"
+                    :data-sitio-id="sitio.id"
+                    v-model="formData[`${modelo.ID}-${sitio.id}`]"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <button
           type="submit"
@@ -69,38 +74,7 @@
       <h4 class="text-center fw-bold mb-3">
         Último turno: {{ lastShift['journal_date'] }}
       </h4>
-      <div class="table-responsive">
-        <table class="table table-bordered table-striped">
-          <thead>
-            <tr>
-              <th>Modelo</th>
-              <th v-for="column in lastShiftColumns" :key="column">
-                {{ column }}
-              </th>
-              <th>Total modelo</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(row, index) in lastShift.data" :key="index">
-              <td>{{ row.model }}</td>
-              <td
-                class="text-center"
-                v-for="column in lastShiftColumns"
-                :key="`${index}-${column}`"
-              >
-                {{ row[column] ?? '-' }}
-              </td>
-              <td class="text-center fw-bold">
-                {{
-                  Object.values(row)
-                    .filter((value) => typeof value === 'number')
-                    .reduce((sum, value) => sum + value, 0)
-                }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <Table :chart-data="lastShift" />
       <h4 class="text-center fw-bold">
         Total del turno: {{ lastShift.total_shift }} Tks
       </h4>
@@ -109,8 +83,10 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, inject, ref } from 'vue';
+import { onMounted, reactive, inject, ref } from 'vue';
 import BiFloppy from '~icons/bi/floppy';
+
+import Table from '../components/Table.vue';
 
 const shiftsArray = ref([]);
 const journalsArray = ref([]);
@@ -122,23 +98,7 @@ const formData = reactive({});
 const errorMessage = ref('');
 
 const fetchCollection = inject('fetchCollection');
-
-const lastShiftColumns = computed(() => {
-  if (!lastShift.value?.data?.length) {
-    return [];
-  }
-
-  const columns = new Set();
-  lastShift.value.data.forEach((row) => {
-    Object.keys(row).forEach((key) => {
-      if (key !== 'model') {
-        columns.add(key);
-      }
-    });
-  });
-
-  return Array.from(columns);
-});
+const requestHeaders = inject('requestHeaders', {});
 
 async function getJournals() {
   await fetchCollection(
@@ -163,7 +123,7 @@ async function getShifts() {
     'No se pudieron cargar los turnos.',
   );
 
-  getLastShift();
+  await getLastShift();
 }
 
 async function getLastShift() {
@@ -194,9 +154,8 @@ async function submitForm() {
       throw new Error(response.statusText || 'Error al guardar el turno.');
     }
 
-    // Clear form data after successful submission
     Object.keys(formData).forEach((key) => delete formData[key]);
-    await getShifts(); // Refresh shifts list
+    await getShifts();
   } catch (error) {
     console.error(error);
   }
