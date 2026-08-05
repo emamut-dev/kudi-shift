@@ -29,8 +29,8 @@ function kudi_shift_rest_permission_check() {
   return kudi_shift_user_can_access_plugin();
 }
 
-require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/includes/autoupdate.php';
+// require_once __DIR__ . '/vendor/autoload.php';
+// require_once __DIR__ . '/includes/autoupdate.php';
 
 require_once dirname(__FILE__) . '/helpers/enqueue_scripts.php';
 require_once dirname(__FILE__) . '/helpers/custom-post-types.php';
