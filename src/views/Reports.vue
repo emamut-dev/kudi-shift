@@ -1,56 +1,19 @@
 <template>
   <div class="row justify-content-center mt-5">
-    <div class="col-md-8">
-      <div
-        class="chart-container"
-        style="position: relative; height: 400px; width: 100%"
-      >
-        <Line
-          v-if="chartData.datasets?.length"
-          :data="chartData"
-          :options="chartOptions"
-        />
-        <div v-else class="text-center text-muted py-4">
-          No hay datos para mostrar.
-        </div>
-      </div>
+    <div class="col-md-10">
+      <Chart :chart-data="chartData" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, inject, onMounted } from 'vue';
-import { Line } from 'vue-chartjs';
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-} from 'chart.js';
+import { inject, onMounted, ref } from 'vue';
+import Chart from '../components/Chart.vue';
 
 const fetchCollection = inject('fetchCollection');
 const shiftsArray = ref([]);
 const chartData = ref({ labels: [], datasets: [] });
 const errorMessage = ref('');
-
-ChartJS.register(
-  Title,
-  Tooltip,
-  Legend,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-);
-
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-};
 
 function getChartData(data) {
   const shiftItems = Array.isArray(data) ? data : [];
