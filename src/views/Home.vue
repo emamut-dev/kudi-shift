@@ -74,7 +74,9 @@
       <h4 class="text-center fw-bold mb-3">
         Último turno: {{ lastShift['journal_date'] }}
       </h4>
+
       <Table :chart-data="lastShift" />
+
       <h4 class="text-center fw-bold">
         Total del turno: {{ lastShift.total_shift }} Tks
       </h4>
