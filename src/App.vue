@@ -29,4 +29,5 @@ async function fetchCollection(endpoint, targetArray, errorText) {
 }
 
 provide('fetchCollection', fetchCollection);
+provide('requestHeaders', requestHeaders);
 </script>
