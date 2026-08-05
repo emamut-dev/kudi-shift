@@ -150,7 +150,7 @@ function register_shifts_post_type()
   $labels = array(
     'name' => _x('Turnos', 'Post Type General Name', 'kudi-shift'),
     'singular_name' => _x('Turno', 'Post Type Singular Name', 'kudi-shift'),
-    'menu_name' => __('Turnos', 'kudi-shift'),
+    'menu_name' => __('CPT Turnos', 'kudi-shift'),
     'name_admin_bar' => __('Turno', 'kudi-shift'),
     'archives' => __('Archivo de turnos', 'kudi-shift'),
     'attributes' => __('Atributos del turno', 'kudi-shift'),
