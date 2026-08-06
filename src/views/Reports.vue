@@ -1,5 +1,10 @@
 <template>
-  <div class="row justify-content-center mt-5">
+  <div class="row justify-content-center mt-4">
+    <div class="col-md-8 text-center">
+      <h2>Reportes</h2>
+    </div>
+  </div>
+  <div class="row justify-content-center mt-1">
     <div class="col-md-10">
       <Chart :chart-data="chartData" />
     </div>
