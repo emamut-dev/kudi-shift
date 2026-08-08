@@ -45,6 +45,16 @@ class KUDI_SHIFT_REST_API {
       'callback'            => array( $this, 'save_shift' ),
       'permission_callback' => array( $this, 'permission_check' ),
     ) );
+
+    register_rest_route( 'kudi-shift/v1', '/current-date', array(
+      'methods'             => 'GET',
+      'callback'            => array( $this, 'get_current_date' ),
+      'permission_callback' => array( $this, 'permission_check' ),
+    ) );
+  }
+
+  public function get_current_date() {
+    return new WP_REST_Response( array( 'current_date' => date( 'Y-m-d' ) ), 200 );
   }
 
   public function get_journals() {

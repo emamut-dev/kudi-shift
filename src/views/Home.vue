@@ -94,7 +94,7 @@ const shiftsArray = ref([]);
 const journalsArray = ref([]);
 const sitiosArray = ref([]);
 const selectedJournal = ref(null);
-const selectedDate = ref(new Date().toISOString().split('T')[0]);
+const selectedDate = ref(null);
 const lastShift = ref(null);
 const formData = reactive({});
 const errorMessage = ref('');
@@ -136,6 +136,24 @@ async function getLastShift() {
   );
 }
 
+async function getCurrentDate() {
+  try {
+    const response = await fetch(`${kudiShiftData.restUrl}current-date`, {
+      method: 'GET',
+      headers: requestHeaders,
+    });
+
+    if (!response.ok) {
+      throw new Error(response.statusText || 'Error al obtener la fecha.');
+    }
+
+    const data = await response.json();
+    selectedDate.value = data.current_date;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 async function submitForm() {
   const sendData = {
     journal_date: selectedDate.value,
@@ -165,7 +183,12 @@ async function submitForm() {
 
 onMounted(async () => {
   try {
-    await Promise.all([getJournals(), getSitios(), getShifts()]);
+    await Promise.all([
+      getJournals(),
+      getSitios(),
+      getShifts(),
+      getCurrentDate(),
+    ]);
   } catch (error) {
     errorMessage.value = error.message;
     console.error(error);
